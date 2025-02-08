@@ -4,6 +4,9 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+overrides:
+  '@metaplex-foundation/umi-eddsa-web3js': '@beeman/metaplex-foundation-umi-eddsa-web3js@1.0.0'
+
 importers:
 
   .:
@@ -721,12 +724,6 @@ packages:
     peerDependencies:
       '@metaplex-foundation/umi': ^1.0.0
 
-  '@metaplex-foundation/umi-eddsa-web3js@1.0.0':
-    resolution: {integrity: sha512-mIdp65Fsi7bhFcDUFZxcThGQaMXQahMNGR46HkXUHglQtRxxYGLduT3XEq/aLPVZCW9mWfyK/M03AInwIAcJTw==}
-    peerDependencies:
-      '@metaplex-foundation/umi': ^1.0.0
-      '@solana/web3.js': ^1.72.0
-
   '@metaplex-foundation/umi-http-fetch@1.0.0':
     resolution: {integrity: sha512-yZbAcuxMOdSSFhvltWIMescBAuf4ddeYjK4LABbTXWKhZFTliYdSSMmViLArbO6lBJAekKhyNbIdM/uH6KhE/w==}
     peerDependencies:
@@ -921,12 +918,6 @@ packages:
     resolution: {integrity: sha512-0PVwmgzZ8+TZ9oGBmdZoQVXflbvuwzN/HRclujpl4N/q3i+y0lqLw8n1bXA8ru3sApDjlmONaNAuYr38y1Kr9w==}
     cpu: [x64]
     os: [win32]
-
-  '@soceanfi/solana-cli-config@0.2.0':
-    resolution: {integrity: sha512-te44VYk+a5NpYu3Cek6wGo+Lou8zT5DUCos3FA6spr/WBfXb4L1SsmOtxgDCB9GRIuBQJgwDFcydAC+G9oL2PQ==}
-    hasBin: true
-    peerDependencies:
-      '@solana/web3.js': ^1
 
   '@solana/buffer-layout@4.0.1':
     resolution: {integrity: sha512-E1ImOIAD1tBZFRdjeM4/pzTiTApC0AOBGwyAMS4fwIodCWArzJ3DWdoh8cKxeFM2fElkxBh2Aqts1BPC373rHA==}
@@ -2959,7 +2950,7 @@ snapshots:
     dependencies:
       '@metaplex-foundation/umi': 1.0.0
       '@metaplex-foundation/umi-downloader-http': 1.0.0(@metaplex-foundation/umi@1.0.0)
-      '@metaplex-foundation/umi-eddsa-web3js': 1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@metaplex-foundation/umi-eddsa-web3js': link:@beeman/metaplex-foundation-umi-eddsa-web3js@1.0.0
       '@metaplex-foundation/umi-http-fetch': 1.0.0(@metaplex-foundation/umi@1.0.0)
       '@metaplex-foundation/umi-program-repository': 1.0.0(@metaplex-foundation/umi@1.0.0)
       '@metaplex-foundation/umi-rpc-chunk-get-accounts': 1.0.0(@metaplex-foundation/umi@1.0.0)
@@ -2973,14 +2964,6 @@ snapshots:
   '@metaplex-foundation/umi-downloader-http@1.0.0(@metaplex-foundation/umi@1.0.0)':
     dependencies:
       '@metaplex-foundation/umi': 1.0.0
-
-  '@metaplex-foundation/umi-eddsa-web3js@1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@metaplex-foundation/umi': 1.0.0
-      '@metaplex-foundation/umi-web3js-adapters': 1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@noble/curves': 1.8.1
-      '@soceanfi/solana-cli-config': 0.2.0(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
-      '@solana/web3.js': 1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
 
   '@metaplex-foundation/umi-http-fetch@1.0.0(@metaplex-foundation/umi@1.0.0)':
     dependencies:
@@ -3141,11 +3124,6 @@ snapshots:
 
   '@rollup/rollup-win32-x64-msvc@4.34.6':
     optional: true
-
-  '@soceanfi/solana-cli-config@0.2.0(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
-    dependencies:
-      '@solana/web3.js': 1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10)
-      yaml: 2.7.0
 
   '@solana/buffer-layout@4.0.1':
     dependencies:
@@ -4987,7 +4965,8 @@ snapshots:
 
   yallist@3.1.1: {}
 
-  yaml@2.7.0: {}
+  yaml@2.7.0:
+    optional: true
 
   yocto-queue@0.1.0: {}
 

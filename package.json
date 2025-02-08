@@ -27,6 +27,9 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "overrides": {
+      "@metaplex-foundation/umi-eddsa-web3js": "@beeman/metaplex-foundation-umi-eddsa-web3js@1.0.0"
+    }
   }
 }
