@@ -24,8 +24,8 @@
     "wrangler": "^3.107.3"
   },
   "dependencies": {
-    "@metaplex-foundation/umi": "^1.0.0",
-    "@metaplex-foundation/umi-bundle-defaults": "^1.0.0",
-    "@solana/web3.js": "1"
+    "@metaplex-foundation/umi": "1.0.0",
+    "@metaplex-foundation/umi-bundle-defaults": "1.0.0",
+    "@solana/web3.js": "1.98.0"
   }
 }
