@@ -1,0 +1,271 @@
+diff --git a/dist/cjs/createWeb3JsEddsa.cjs b/dist/cjs/createWeb3JsEddsa.cjs
+index 5a9ef58d468b2771cd4986bc73c38b2cb0cdfba9..e16ed441f7852ff84589476140322d5c66c07db9 100644
+--- a/dist/cjs/createWeb3JsEddsa.cjs
++++ b/dist/cjs/createWeb3JsEddsa.cjs
+@@ -5,16 +5,16 @@ Object.defineProperty(exports, '__esModule', { value: true });
+ var umi = require('@metaplex-foundation/umi');
+ var umiWeb3jsAdapters = require('@metaplex-foundation/umi-web3js-adapters');
+ var ed25519 = require('@noble/curves/ed25519');
+-var solanaCliConfig = require('@soceanfi/solana-cli-config');
+ var web3_js = require('@solana/web3.js');
+-var fs = require('fs');
++var node_fs = require('node:fs');
++var loadSolanaKeypair = require('./loadSolanaKeypair.cjs');
+ 
+ function createWeb3JsEddsa() {
+   const generateKeypair = () => umiWeb3jsAdapters.fromWeb3JsKeypair(web3_js.Keypair.generate());
+   const createKeypairFromSecretKey = secretKey => umiWeb3jsAdapters.fromWeb3JsKeypair(web3_js.Keypair.fromSecretKey(secretKey));
+   const createKeypairFromSeed = seed => umiWeb3jsAdapters.fromWeb3JsKeypair(web3_js.Keypair.fromSeed(seed));
+-  const createKeypairFromFile = path => createKeypairFromSecretKey(new Uint8Array(JSON.parse(fs.readFileSync(path).toString())));
+-  const createKeypairFromSolanaConfig = () => umiWeb3jsAdapters.fromWeb3JsKeypair(solanaCliConfig.SolanaCliConfig.load().loadKeypair());
++  const createKeypairFromFile = path => createKeypairFromSecretKey(new Uint8Array(JSON.parse(node_fs.readFileSync(path).toString())));
++  const createKeypairFromSolanaConfig = () => umiWeb3jsAdapters.fromWeb3JsKeypair(loadSolanaKeypair.loadSolanaKeypair());
+   const isOnCurve = input => web3_js.PublicKey.isOnCurve(umiWeb3jsAdapters.toWeb3JsPublicKey(umi.publicKey(input)));
+   const findPda = (programId, seeds) => {
+     const [key, bump] = web3_js.PublicKey.findProgramAddressSync(seeds, umiWeb3jsAdapters.toWeb3JsPublicKey(umi.publicKey(programId)));
+diff --git a/dist/cjs/createWeb3JsEddsa.cjs.map b/dist/cjs/createWeb3JsEddsa.cjs.map
+index 1844510d4d837d3f56832453350b699ac9798160..fb5b5dae8c055551495d1612968b67087780ad87 100644
+--- a/dist/cjs/createWeb3JsEddsa.cjs.map
++++ b/dist/cjs/createWeb3JsEddsa.cjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"createWeb3JsEddsa.cjs","sources":["../../src/createWeb3JsEddsa.ts"],"sourcesContent":["import {\n  EddsaInterface,\n  Keypair,\n  Pda,\n  publicKey,\n  PublicKey,\n  publicKeyBytes,\n  PublicKeyInput,\n} from '@metaplex-foundation/umi';\nimport {\n  fromWeb3JsKeypair,\n  fromWeb3JsPublicKey,\n  toWeb3JsPublicKey,\n} from '@metaplex-foundation/umi-web3js-adapters';\nimport { ed25519 } from '@noble/curves/ed25519';\nimport { SolanaCliConfig } from '@soceanfi/solana-cli-config';\nimport {\n  Keypair as Web3JsKeypair,\n  PublicKey as Web3JsPublicKey,\n} from '@solana/web3.js';\nimport { readFileSync } from 'fs';\n\nexport function createWeb3JsEddsa(): EddsaInterface {\n  const generateKeypair = (): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.generate());\n\n  const createKeypairFromSecretKey = (secretKey: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSecretKey(secretKey));\n\n  const createKeypairFromSeed = (seed: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSeed(seed));\n\n  const createKeypairFromFile = (path: string): Keypair =>\n    createKeypairFromSecretKey(\n      new Uint8Array(JSON.parse(readFileSync(path).toString()))\n    );\n\n  const createKeypairFromSolanaConfig = (): Keypair =>\n    fromWeb3JsKeypair(SolanaCliConfig.load().loadKeypair());\n\n  const isOnCurve = (input: PublicKeyInput): boolean =>\n    Web3JsPublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));\n\n  const findPda = (programId: PublicKeyInput, seeds: Uint8Array[]): Pda => {\n    const [key, bump] = Web3JsPublicKey.findProgramAddressSync(\n      seeds,\n      toWeb3JsPublicKey(publicKey(programId))\n    );\n    return [fromWeb3JsPublicKey(key), bump] as Pda;\n  };\n\n  const sign = (message: Uint8Array, keypair: Keypair): Uint8Array =>\n    ed25519.sign(message, keypair.secretKey.slice(0, 32));\n\n  const verify = (\n    message: Uint8Array,\n    signature: Uint8Array,\n    publicKey: PublicKey\n  ): boolean => ed25519.verify(signature, message, publicKeyBytes(publicKey));\n\n  return {\n    generateKeypair,\n    createKeypairFromSecretKey,\n    createKeypairFromSeed,\n    createKeypairFromFile,\n    createKeypairFromSolanaConfig,\n    isOnCurve,\n    findPda,\n    sign,\n    verify,\n  };\n}\n"],"names":["createWeb3JsEddsa","generateKeypair","fromWeb3JsKeypair","Web3JsKeypair","generate","createKeypairFromSecretKey","secretKey","fromSecretKey","createKeypairFromSeed","seed","fromSeed","createKeypairFromFile","path","Uint8Array","JSON","parse","readFileSync","toString","createKeypairFromSolanaConfig","SolanaCliConfig","load","loadKeypair","isOnCurve","input","Web3JsPublicKey","toWeb3JsPublicKey","publicKey","findPda","programId","seeds","key","bump","findProgramAddressSync","fromWeb3JsPublicKey","sign","message","keypair","ed25519","slice","verify","signature","publicKeyBytes"],"mappings":";;;;;;;;;;;AAsBO,SAASA,iBAAiB,GAAmB;EAClD,MAAMC,eAAe,GAAG,MACtBC,mCAAiB,CAACC,eAAa,CAACC,QAAQ,EAAE,CAAC,CAAA;AAE7C,EAAA,MAAMC,0BAA0B,GAAIC,SAAqB,IACvDJ,mCAAiB,CAACC,eAAa,CAACI,aAAa,CAACD,SAAS,CAAC,CAAC,CAAA;AAE3D,EAAA,MAAME,qBAAqB,GAAIC,IAAgB,IAC7CP,mCAAiB,CAACC,eAAa,CAACO,QAAQ,CAACD,IAAI,CAAC,CAAC,CAAA;EAEjD,MAAME,qBAAqB,GAAIC,IAAY,IACzCP,0BAA0B,CACxB,IAAIQ,UAAU,CAACC,IAAI,CAACC,KAAK,CAACC,eAAY,CAACJ,IAAI,CAAC,CAACK,QAAQ,EAAE,CAAC,CAAC,CAC1D,CAAA;AAEH,EAAA,MAAMC,6BAA6B,GAAG,MACpChB,mCAAiB,CAACiB,+BAAe,CAACC,IAAI,EAAE,CAACC,WAAW,EAAE,CAAC,CAAA;AAEzD,EAAA,MAAMC,SAAS,GAAIC,KAAqB,IACtCC,iBAAe,CAACF,SAAS,CAACG,mCAAiB,CAACC,aAAS,CAACH,KAAK,CAAC,CAAC,CAAC,CAAA;AAEhE,EAAA,MAAMI,OAAO,GAAG,CAACC,SAAyB,EAAEC,KAAmB,KAAU;AACvE,IAAA,MAAM,CAACC,GAAG,EAAEC,IAAI,CAAC,GAAGP,iBAAe,CAACQ,sBAAsB,CACxDH,KAAK,EACLJ,mCAAiB,CAACC,aAAS,CAACE,SAAS,CAAC,CAAC,CACxC,CAAA;AACD,IAAA,OAAO,CAACK,qCAAmB,CAACH,GAAG,CAAC,EAAEC,IAAI,CAAC,CAAA;GACxC,CAAA;EAED,MAAMG,IAAI,GAAG,CAACC,OAAmB,EAAEC,OAAgB,KACjDC,eAAO,CAACH,IAAI,CAACC,OAAO,EAAEC,OAAO,CAAC9B,SAAS,CAACgC,KAAK,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAA;EAEvD,MAAMC,MAAM,GAAG,CACbJ,OAAmB,EACnBK,SAAqB,EACrBd,SAAoB,KACRW,eAAO,CAACE,MAAM,CAACC,SAAS,EAAEL,OAAO,EAAEM,kBAAc,CAACf,SAAS,CAAC,CAAC,CAAA;EAE3E,OAAO;IACLzB,eAAe;IACfI,0BAA0B;IAC1BG,qBAAqB;IACrBG,qBAAqB;IACrBO,6BAA6B;IAC7BI,SAAS;IACTK,OAAO;IACPO,IAAI;AACJK,IAAAA,MAAAA;GACD,CAAA;AACH;;;;"}
+\ No newline at end of file
++{"version":3,"file":"createWeb3JsEddsa.cjs","sources":["../../src/createWeb3JsEddsa.ts"],"sourcesContent":["import {\n  EddsaInterface,\n  Keypair,\n  Pda,\n  publicKey,\n  PublicKey,\n  publicKeyBytes,\n  PublicKeyInput,\n} from '@metaplex-foundation/umi';\nimport {\n  fromWeb3JsKeypair,\n  fromWeb3JsPublicKey,\n  toWeb3JsPublicKey,\n} from '@metaplex-foundation/umi-web3js-adapters';\nimport { ed25519 } from '@noble/curves/ed25519';\nimport {\n  Keypair as Web3JsKeypair,\n  PublicKey as Web3JsPublicKey,\n} from '@solana/web3.js';\nimport { readFileSync } from 'node:fs';\nimport { loadSolanaKeypair } from './loadSolanaKeypair';\n\nexport function createWeb3JsEddsa(): EddsaInterface {\n  const generateKeypair = (): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.generate());\n\n  const createKeypairFromSecretKey = (secretKey: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSecretKey(secretKey));\n\n  const createKeypairFromSeed = (seed: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSeed(seed));\n\n  const createKeypairFromFile = (path: string): Keypair =>\n    createKeypairFromSecretKey(\n      new Uint8Array(JSON.parse(readFileSync(path).toString()))\n    );\n\n  const createKeypairFromSolanaConfig = (): Keypair =>\n    fromWeb3JsKeypair(loadSolanaKeypair());\n\n  const isOnCurve = (input: PublicKeyInput): boolean =>\n    Web3JsPublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));\n\n  const findPda = (programId: PublicKeyInput, seeds: Uint8Array[]): Pda => {\n    const [key, bump] = Web3JsPublicKey.findProgramAddressSync(\n      seeds,\n      toWeb3JsPublicKey(publicKey(programId))\n    );\n    return [fromWeb3JsPublicKey(key), bump] as Pda;\n  };\n\n  const sign = (message: Uint8Array, keypair: Keypair): Uint8Array =>\n    ed25519.sign(message, keypair.secretKey.slice(0, 32));\n\n  const verify = (\n    message: Uint8Array,\n    signature: Uint8Array,\n    publicKey: PublicKey\n  ): boolean => ed25519.verify(signature, message, publicKeyBytes(publicKey));\n\n  return {\n    generateKeypair,\n    createKeypairFromSecretKey,\n    createKeypairFromSeed,\n    createKeypairFromFile,\n    createKeypairFromSolanaConfig,\n    isOnCurve,\n    findPda,\n    sign,\n    verify,\n  };\n}\n"],"names":["createWeb3JsEddsa","generateKeypair","fromWeb3JsKeypair","Web3JsKeypair","generate","createKeypairFromSecretKey","secretKey","fromSecretKey","createKeypairFromSeed","seed","fromSeed","createKeypairFromFile","path","Uint8Array","JSON","parse","readFileSync","toString","createKeypairFromSolanaConfig","loadSolanaKeypair","isOnCurve","input","Web3JsPublicKey","toWeb3JsPublicKey","publicKey","findPda","programId","seeds","key","bump","findProgramAddressSync","fromWeb3JsPublicKey","sign","message","keypair","ed25519","slice","verify","signature","publicKeyBytes"],"mappings":";;;;;;;;;;;AAsBO,SAASA,iBAAiB,GAAmB;EAClD,MAAMC,eAAe,GAAG,MACtBC,mCAAiB,CAACC,eAAa,CAACC,QAAQ,EAAE,CAAC,CAAA;AAE7C,EAAA,MAAMC,0BAA0B,GAAIC,SAAqB,IACvDJ,mCAAiB,CAACC,eAAa,CAACI,aAAa,CAACD,SAAS,CAAC,CAAC,CAAA;AAE3D,EAAA,MAAME,qBAAqB,GAAIC,IAAgB,IAC7CP,mCAAiB,CAACC,eAAa,CAACO,QAAQ,CAACD,IAAI,CAAC,CAAC,CAAA;EAEjD,MAAME,qBAAqB,GAAIC,IAAY,IACzCP,0BAA0B,CACxB,IAAIQ,UAAU,CAACC,IAAI,CAACC,KAAK,CAACC,oBAAY,CAACJ,IAAI,CAAC,CAACK,QAAQ,EAAE,CAAC,CAAC,CAC1D,CAAA;AAEH,EAAA,MAAMC,6BAA6B,GAAG,MACpChB,mCAAiB,CAACiB,mCAAiB,EAAE,CAAC,CAAA;AAExC,EAAA,MAAMC,SAAS,GAAIC,KAAqB,IACtCC,iBAAe,CAACF,SAAS,CAACG,mCAAiB,CAACC,aAAS,CAACH,KAAK,CAAC,CAAC,CAAC,CAAA;AAEhE,EAAA,MAAMI,OAAO,GAAG,CAACC,SAAyB,EAAEC,KAAmB,KAAU;AACvE,IAAA,MAAM,CAACC,GAAG,EAAEC,IAAI,CAAC,GAAGP,iBAAe,CAACQ,sBAAsB,CACxDH,KAAK,EACLJ,mCAAiB,CAACC,aAAS,CAACE,SAAS,CAAC,CAAC,CACxC,CAAA;AACD,IAAA,OAAO,CAACK,qCAAmB,CAACH,GAAG,CAAC,EAAEC,IAAI,CAAC,CAAA;GACxC,CAAA;EAED,MAAMG,IAAI,GAAG,CAACC,OAAmB,EAAEC,OAAgB,KACjDC,eAAO,CAACH,IAAI,CAACC,OAAO,EAAEC,OAAO,CAAC5B,SAAS,CAAC8B,KAAK,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAA;EAEvD,MAAMC,MAAM,GAAG,CACbJ,OAAmB,EACnBK,SAAqB,EACrBd,SAAoB,KACRW,eAAO,CAACE,MAAM,CAACC,SAAS,EAAEL,OAAO,EAAEM,kBAAc,CAACf,SAAS,CAAC,CAAC,CAAA;EAE3E,OAAO;IACLvB,eAAe;IACfI,0BAA0B;IAC1BG,qBAAqB;IACrBG,qBAAqB;IACrBO,6BAA6B;IAC7BE,SAAS;IACTK,OAAO;IACPO,IAAI;AACJK,IAAAA,MAAAA;GACD,CAAA;AACH;;;;"}
+\ No newline at end of file
+diff --git a/dist/cjs/loadSolanaKeypair.cjs b/dist/cjs/loadSolanaKeypair.cjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..995420a2a0f8b637f8cc4da4a80d4614ecbb6581
+--- /dev/null
++++ b/dist/cjs/loadSolanaKeypair.cjs
+@@ -0,0 +1,27 @@
++'use strict';
++
++Object.defineProperty(exports, '__esModule', { value: true });
++
++var web3_js = require('@solana/web3.js');
++var node_fs = require('node:fs');
++var node_os = require('node:os');
++var yaml = require('yaml');
++
++/**
++ * Copyright (c) 2022 Socean Finance
++ * Based on https://github.com/igneous-labs/solana-cli-config
++ *
++ * This software is released under the MIT License.
++ * https://opensource.org/licenses/MIT
++ *
++ */
++const DEFAULT_PATH = `${node_os.homedir()}/.config/solana/cli/config.yml`;
++function loadSolanaKeypair(path = DEFAULT_PATH) {
++  const {
++    keypair_path: keypairPath
++  } = yaml.parse(node_fs.readFileSync(path, 'utf-8'));
++  return web3_js.Keypair.fromSecretKey(Buffer.from(JSON.parse(node_fs.readFileSync(keypairPath, 'utf-8'))));
++}
++
++exports.loadSolanaKeypair = loadSolanaKeypair;
++//# sourceMappingURL=loadSolanaKeypair.cjs.map
+diff --git a/dist/cjs/loadSolanaKeypair.cjs.map b/dist/cjs/loadSolanaKeypair.cjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..e929871b58c2f60b85ab701c332d99a28449e9b1
+--- /dev/null
++++ b/dist/cjs/loadSolanaKeypair.cjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"loadSolanaKeypair.cjs","sources":["../../src/loadSolanaKeypair.ts"],"sourcesContent":["/**\n * Copyright (c) 2022 Socean Finance\n * Based on https://github.com/igneous-labs/solana-cli-config\n *\n * This software is released under the MIT License.\n * https://opensource.org/licenses/MIT\n *\n */\nimport { Keypair } from '@solana/web3.js';\nimport { readFileSync } from 'node:fs';\nimport { homedir } from 'node:os';\nimport { parse } from 'yaml';\n\nconst DEFAULT_PATH = `${homedir()}/.config/solana/cli/config.yml`;\n\nexport function loadSolanaKeypair(path: string = DEFAULT_PATH): Keypair {\n  const { keypair_path: keypairPath } = parse(readFileSync(path, 'utf-8')) as {\n    keypair_path: string;\n  };\n\n  return Keypair.fromSecretKey(\n    Buffer.from(JSON.parse(readFileSync(keypairPath, 'utf-8')) as number[])\n  );\n}\n"],"names":["DEFAULT_PATH","homedir","loadSolanaKeypair","path","keypair_path","keypairPath","parse","readFileSync","Keypair","fromSecretKey","Buffer","from","JSON"],"mappings":";;;;;;;;;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AAMA,MAAMA,YAAY,GAAI,CAAEC,EAAAA,eAAO,EAAG,CAA+B,8BAAA,CAAA,CAAA;AAE1D,SAASC,iBAAiB,CAACC,IAAY,GAAGH,YAAY,EAAW;EACtE,MAAM;AAAEI,IAAAA,YAAY,EAAEC,WAAAA;GAAa,GAAGC,UAAK,CAACC,oBAAY,CAACJ,IAAI,EAAE,OAAO,CAAC,CAEtE,CAAA;EAED,OAAOK,eAAO,CAACC,aAAa,CAC1BC,MAAM,CAACC,IAAI,CAACC,IAAI,CAACN,KAAK,CAACC,oBAAY,CAACF,WAAW,EAAE,OAAO,CAAC,CAAC,CAAa,CACxE,CAAA;AACH;;;;"}
+\ No newline at end of file
+diff --git a/dist/esm/createWeb3JsEddsa.mjs b/dist/esm/createWeb3JsEddsa.mjs
+index b4f263360911fb6740690b6e58173abdc94d16b1..123610c14ac16ecd37d20e19511e5b780d817f0f 100644
+--- a/dist/esm/createWeb3JsEddsa.mjs
++++ b/dist/esm/createWeb3JsEddsa.mjs
+@@ -1,16 +1,16 @@
+ import { publicKey, publicKeyBytes } from '@metaplex-foundation/umi';
+ import { fromWeb3JsKeypair, toWeb3JsPublicKey, fromWeb3JsPublicKey } from '@metaplex-foundation/umi-web3js-adapters';
+ import { ed25519 } from '@noble/curves/ed25519';
+-import { SolanaCliConfig } from '@soceanfi/solana-cli-config';
+ import { Keypair, PublicKey } from '@solana/web3.js';
+-import { readFileSync } from 'fs';
++import { readFileSync } from 'node:fs';
++import { loadSolanaKeypair } from './loadSolanaKeypair.mjs';
+ 
+ function createWeb3JsEddsa() {
+   const generateKeypair = () => fromWeb3JsKeypair(Keypair.generate());
+   const createKeypairFromSecretKey = secretKey => fromWeb3JsKeypair(Keypair.fromSecretKey(secretKey));
+   const createKeypairFromSeed = seed => fromWeb3JsKeypair(Keypair.fromSeed(seed));
+   const createKeypairFromFile = path => createKeypairFromSecretKey(new Uint8Array(JSON.parse(readFileSync(path).toString())));
+-  const createKeypairFromSolanaConfig = () => fromWeb3JsKeypair(SolanaCliConfig.load().loadKeypair());
++  const createKeypairFromSolanaConfig = () => fromWeb3JsKeypair(loadSolanaKeypair());
+   const isOnCurve = input => PublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));
+   const findPda = (programId, seeds) => {
+     const [key, bump] = PublicKey.findProgramAddressSync(seeds, toWeb3JsPublicKey(publicKey(programId)));
+diff --git a/dist/esm/createWeb3JsEddsa.mjs.map b/dist/esm/createWeb3JsEddsa.mjs.map
+index 0e8ec1115559e2c9252c4d41be20af23da1a2ad5..f450c99e06b4ee8e5c409cc2ef922b98f24ce668 100644
+--- a/dist/esm/createWeb3JsEddsa.mjs.map
++++ b/dist/esm/createWeb3JsEddsa.mjs.map
+@@ -1 +1 @@
+-{"version":3,"file":"createWeb3JsEddsa.mjs","sources":["../../src/createWeb3JsEddsa.ts"],"sourcesContent":["import {\n  EddsaInterface,\n  Keypair,\n  Pda,\n  publicKey,\n  PublicKey,\n  publicKeyBytes,\n  PublicKeyInput,\n} from '@metaplex-foundation/umi';\nimport {\n  fromWeb3JsKeypair,\n  fromWeb3JsPublicKey,\n  toWeb3JsPublicKey,\n} from '@metaplex-foundation/umi-web3js-adapters';\nimport { ed25519 } from '@noble/curves/ed25519';\nimport { SolanaCliConfig } from '@soceanfi/solana-cli-config';\nimport {\n  Keypair as Web3JsKeypair,\n  PublicKey as Web3JsPublicKey,\n} from '@solana/web3.js';\nimport { readFileSync } from 'fs';\n\nexport function createWeb3JsEddsa(): EddsaInterface {\n  const generateKeypair = (): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.generate());\n\n  const createKeypairFromSecretKey = (secretKey: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSecretKey(secretKey));\n\n  const createKeypairFromSeed = (seed: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSeed(seed));\n\n  const createKeypairFromFile = (path: string): Keypair =>\n    createKeypairFromSecretKey(\n      new Uint8Array(JSON.parse(readFileSync(path).toString()))\n    );\n\n  const createKeypairFromSolanaConfig = (): Keypair =>\n    fromWeb3JsKeypair(SolanaCliConfig.load().loadKeypair());\n\n  const isOnCurve = (input: PublicKeyInput): boolean =>\n    Web3JsPublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));\n\n  const findPda = (programId: PublicKeyInput, seeds: Uint8Array[]): Pda => {\n    const [key, bump] = Web3JsPublicKey.findProgramAddressSync(\n      seeds,\n      toWeb3JsPublicKey(publicKey(programId))\n    );\n    return [fromWeb3JsPublicKey(key), bump] as Pda;\n  };\n\n  const sign = (message: Uint8Array, keypair: Keypair): Uint8Array =>\n    ed25519.sign(message, keypair.secretKey.slice(0, 32));\n\n  const verify = (\n    message: Uint8Array,\n    signature: Uint8Array,\n    publicKey: PublicKey\n  ): boolean => ed25519.verify(signature, message, publicKeyBytes(publicKey));\n\n  return {\n    generateKeypair,\n    createKeypairFromSecretKey,\n    createKeypairFromSeed,\n    createKeypairFromFile,\n    createKeypairFromSolanaConfig,\n    isOnCurve,\n    findPda,\n    sign,\n    verify,\n  };\n}\n"],"names":["createWeb3JsEddsa","generateKeypair","fromWeb3JsKeypair","Web3JsKeypair","generate","createKeypairFromSecretKey","secretKey","fromSecretKey","createKeypairFromSeed","seed","fromSeed","createKeypairFromFile","path","Uint8Array","JSON","parse","readFileSync","toString","createKeypairFromSolanaConfig","SolanaCliConfig","load","loadKeypair","isOnCurve","input","Web3JsPublicKey","toWeb3JsPublicKey","publicKey","findPda","programId","seeds","key","bump","findProgramAddressSync","fromWeb3JsPublicKey","sign","message","keypair","ed25519","slice","verify","signature","publicKeyBytes"],"mappings":";;;;;;;AAsBO,SAASA,iBAAiB,GAAmB;EAClD,MAAMC,eAAe,GAAG,MACtBC,iBAAiB,CAACC,OAAa,CAACC,QAAQ,EAAE,CAAC,CAAA;AAE7C,EAAA,MAAMC,0BAA0B,GAAIC,SAAqB,IACvDJ,iBAAiB,CAACC,OAAa,CAACI,aAAa,CAACD,SAAS,CAAC,CAAC,CAAA;AAE3D,EAAA,MAAME,qBAAqB,GAAIC,IAAgB,IAC7CP,iBAAiB,CAACC,OAAa,CAACO,QAAQ,CAACD,IAAI,CAAC,CAAC,CAAA;EAEjD,MAAME,qBAAqB,GAAIC,IAAY,IACzCP,0BAA0B,CACxB,IAAIQ,UAAU,CAACC,IAAI,CAACC,KAAK,CAACC,YAAY,CAACJ,IAAI,CAAC,CAACK,QAAQ,EAAE,CAAC,CAAC,CAC1D,CAAA;AAEH,EAAA,MAAMC,6BAA6B,GAAG,MACpChB,iBAAiB,CAACiB,eAAe,CAACC,IAAI,EAAE,CAACC,WAAW,EAAE,CAAC,CAAA;AAEzD,EAAA,MAAMC,SAAS,GAAIC,KAAqB,IACtCC,SAAe,CAACF,SAAS,CAACG,iBAAiB,CAACC,SAAS,CAACH,KAAK,CAAC,CAAC,CAAC,CAAA;AAEhE,EAAA,MAAMI,OAAO,GAAG,CAACC,SAAyB,EAAEC,KAAmB,KAAU;AACvE,IAAA,MAAM,CAACC,GAAG,EAAEC,IAAI,CAAC,GAAGP,SAAe,CAACQ,sBAAsB,CACxDH,KAAK,EACLJ,iBAAiB,CAACC,SAAS,CAACE,SAAS,CAAC,CAAC,CACxC,CAAA;AACD,IAAA,OAAO,CAACK,mBAAmB,CAACH,GAAG,CAAC,EAAEC,IAAI,CAAC,CAAA;GACxC,CAAA;EAED,MAAMG,IAAI,GAAG,CAACC,OAAmB,EAAEC,OAAgB,KACjDC,OAAO,CAACH,IAAI,CAACC,OAAO,EAAEC,OAAO,CAAC9B,SAAS,CAACgC,KAAK,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAA;EAEvD,MAAMC,MAAM,GAAG,CACbJ,OAAmB,EACnBK,SAAqB,EACrBd,SAAoB,KACRW,OAAO,CAACE,MAAM,CAACC,SAAS,EAAEL,OAAO,EAAEM,cAAc,CAACf,SAAS,CAAC,CAAC,CAAA;EAE3E,OAAO;IACLzB,eAAe;IACfI,0BAA0B;IAC1BG,qBAAqB;IACrBG,qBAAqB;IACrBO,6BAA6B;IAC7BI,SAAS;IACTK,OAAO;IACPO,IAAI;AACJK,IAAAA,MAAAA;GACD,CAAA;AACH;;;;"}
+\ No newline at end of file
++{"version":3,"file":"createWeb3JsEddsa.mjs","sources":["../../src/createWeb3JsEddsa.ts"],"sourcesContent":["import {\n  EddsaInterface,\n  Keypair,\n  Pda,\n  publicKey,\n  PublicKey,\n  publicKeyBytes,\n  PublicKeyInput,\n} from '@metaplex-foundation/umi';\nimport {\n  fromWeb3JsKeypair,\n  fromWeb3JsPublicKey,\n  toWeb3JsPublicKey,\n} from '@metaplex-foundation/umi-web3js-adapters';\nimport { ed25519 } from '@noble/curves/ed25519';\nimport {\n  Keypair as Web3JsKeypair,\n  PublicKey as Web3JsPublicKey,\n} from '@solana/web3.js';\nimport { readFileSync } from 'node:fs';\nimport { loadSolanaKeypair } from './loadSolanaKeypair';\n\nexport function createWeb3JsEddsa(): EddsaInterface {\n  const generateKeypair = (): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.generate());\n\n  const createKeypairFromSecretKey = (secretKey: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSecretKey(secretKey));\n\n  const createKeypairFromSeed = (seed: Uint8Array): Keypair =>\n    fromWeb3JsKeypair(Web3JsKeypair.fromSeed(seed));\n\n  const createKeypairFromFile = (path: string): Keypair =>\n    createKeypairFromSecretKey(\n      new Uint8Array(JSON.parse(readFileSync(path).toString()))\n    );\n\n  const createKeypairFromSolanaConfig = (): Keypair =>\n    fromWeb3JsKeypair(loadSolanaKeypair());\n\n  const isOnCurve = (input: PublicKeyInput): boolean =>\n    Web3JsPublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));\n\n  const findPda = (programId: PublicKeyInput, seeds: Uint8Array[]): Pda => {\n    const [key, bump] = Web3JsPublicKey.findProgramAddressSync(\n      seeds,\n      toWeb3JsPublicKey(publicKey(programId))\n    );\n    return [fromWeb3JsPublicKey(key), bump] as Pda;\n  };\n\n  const sign = (message: Uint8Array, keypair: Keypair): Uint8Array =>\n    ed25519.sign(message, keypair.secretKey.slice(0, 32));\n\n  const verify = (\n    message: Uint8Array,\n    signature: Uint8Array,\n    publicKey: PublicKey\n  ): boolean => ed25519.verify(signature, message, publicKeyBytes(publicKey));\n\n  return {\n    generateKeypair,\n    createKeypairFromSecretKey,\n    createKeypairFromSeed,\n    createKeypairFromFile,\n    createKeypairFromSolanaConfig,\n    isOnCurve,\n    findPda,\n    sign,\n    verify,\n  };\n}\n"],"names":["createWeb3JsEddsa","generateKeypair","fromWeb3JsKeypair","Web3JsKeypair","generate","createKeypairFromSecretKey","secretKey","fromSecretKey","createKeypairFromSeed","seed","fromSeed","createKeypairFromFile","path","Uint8Array","JSON","parse","readFileSync","toString","createKeypairFromSolanaConfig","loadSolanaKeypair","isOnCurve","input","Web3JsPublicKey","toWeb3JsPublicKey","publicKey","findPda","programId","seeds","key","bump","findProgramAddressSync","fromWeb3JsPublicKey","sign","message","keypair","ed25519","slice","verify","signature","publicKeyBytes"],"mappings":";;;;;;;AAsBO,SAASA,iBAAiB,GAAmB;EAClD,MAAMC,eAAe,GAAG,MACtBC,iBAAiB,CAACC,OAAa,CAACC,QAAQ,EAAE,CAAC,CAAA;AAE7C,EAAA,MAAMC,0BAA0B,GAAIC,SAAqB,IACvDJ,iBAAiB,CAACC,OAAa,CAACI,aAAa,CAACD,SAAS,CAAC,CAAC,CAAA;AAE3D,EAAA,MAAME,qBAAqB,GAAIC,IAAgB,IAC7CP,iBAAiB,CAACC,OAAa,CAACO,QAAQ,CAACD,IAAI,CAAC,CAAC,CAAA;EAEjD,MAAME,qBAAqB,GAAIC,IAAY,IACzCP,0BAA0B,CACxB,IAAIQ,UAAU,CAACC,IAAI,CAACC,KAAK,CAACC,YAAY,CAACJ,IAAI,CAAC,CAACK,QAAQ,EAAE,CAAC,CAAC,CAC1D,CAAA;AAEH,EAAA,MAAMC,6BAA6B,GAAG,MACpChB,iBAAiB,CAACiB,iBAAiB,EAAE,CAAC,CAAA;AAExC,EAAA,MAAMC,SAAS,GAAIC,KAAqB,IACtCC,SAAe,CAACF,SAAS,CAACG,iBAAiB,CAACC,SAAS,CAACH,KAAK,CAAC,CAAC,CAAC,CAAA;AAEhE,EAAA,MAAMI,OAAO,GAAG,CAACC,SAAyB,EAAEC,KAAmB,KAAU;AACvE,IAAA,MAAM,CAACC,GAAG,EAAEC,IAAI,CAAC,GAAGP,SAAe,CAACQ,sBAAsB,CACxDH,KAAK,EACLJ,iBAAiB,CAACC,SAAS,CAACE,SAAS,CAAC,CAAC,CACxC,CAAA;AACD,IAAA,OAAO,CAACK,mBAAmB,CAACH,GAAG,CAAC,EAAEC,IAAI,CAAC,CAAA;GACxC,CAAA;EAED,MAAMG,IAAI,GAAG,CAACC,OAAmB,EAAEC,OAAgB,KACjDC,OAAO,CAACH,IAAI,CAACC,OAAO,EAAEC,OAAO,CAAC5B,SAAS,CAAC8B,KAAK,CAAC,CAAC,EAAE,EAAE,CAAC,CAAC,CAAA;EAEvD,MAAMC,MAAM,GAAG,CACbJ,OAAmB,EACnBK,SAAqB,EACrBd,SAAoB,KACRW,OAAO,CAACE,MAAM,CAACC,SAAS,EAAEL,OAAO,EAAEM,cAAc,CAACf,SAAS,CAAC,CAAC,CAAA;EAE3E,OAAO;IACLvB,eAAe;IACfI,0BAA0B;IAC1BG,qBAAqB;IACrBG,qBAAqB;IACrBO,6BAA6B;IAC7BE,SAAS;IACTK,OAAO;IACPO,IAAI;AACJK,IAAAA,MAAAA;GACD,CAAA;AACH;;;;"}
+\ No newline at end of file
+diff --git a/dist/esm/loadSolanaKeypair.mjs b/dist/esm/loadSolanaKeypair.mjs
+new file mode 100644
+index 0000000000000000000000000000000000000000..cb3a97b1d15e32cf5babbc98b56bdf2f92d61b58
+--- /dev/null
++++ b/dist/esm/loadSolanaKeypair.mjs
+@@ -0,0 +1,23 @@
++import { Keypair } from '@solana/web3.js';
++import { readFileSync } from 'node:fs';
++import { homedir } from 'node:os';
++import { parse } from 'yaml';
++
++/**
++ * Copyright (c) 2022 Socean Finance
++ * Based on https://github.com/igneous-labs/solana-cli-config
++ *
++ * This software is released under the MIT License.
++ * https://opensource.org/licenses/MIT
++ *
++ */
++const DEFAULT_PATH = `${homedir()}/.config/solana/cli/config.yml`;
++function loadSolanaKeypair(path = DEFAULT_PATH) {
++  const {
++    keypair_path: keypairPath
++  } = parse(readFileSync(path, 'utf-8'));
++  return Keypair.fromSecretKey(Buffer.from(JSON.parse(readFileSync(keypairPath, 'utf-8'))));
++}
++
++export { loadSolanaKeypair };
++//# sourceMappingURL=loadSolanaKeypair.mjs.map
+diff --git a/dist/esm/loadSolanaKeypair.mjs.map b/dist/esm/loadSolanaKeypair.mjs.map
+new file mode 100644
+index 0000000000000000000000000000000000000000..a744a845bd68ac6e88a336d22fb688d44e6c3e05
+--- /dev/null
++++ b/dist/esm/loadSolanaKeypair.mjs.map
+@@ -0,0 +1 @@
++{"version":3,"file":"loadSolanaKeypair.mjs","sources":["../../src/loadSolanaKeypair.ts"],"sourcesContent":["/**\n * Copyright (c) 2022 Socean Finance\n * Based on https://github.com/igneous-labs/solana-cli-config\n *\n * This software is released under the MIT License.\n * https://opensource.org/licenses/MIT\n *\n */\nimport { Keypair } from '@solana/web3.js';\nimport { readFileSync } from 'node:fs';\nimport { homedir } from 'node:os';\nimport { parse } from 'yaml';\n\nconst DEFAULT_PATH = `${homedir()}/.config/solana/cli/config.yml`;\n\nexport function loadSolanaKeypair(path: string = DEFAULT_PATH): Keypair {\n  const { keypair_path: keypairPath } = parse(readFileSync(path, 'utf-8')) as {\n    keypair_path: string;\n  };\n\n  return Keypair.fromSecretKey(\n    Buffer.from(JSON.parse(readFileSync(keypairPath, 'utf-8')) as number[])\n  );\n}\n"],"names":["DEFAULT_PATH","homedir","loadSolanaKeypair","path","keypair_path","keypairPath","parse","readFileSync","Keypair","fromSecretKey","Buffer","from","JSON"],"mappings":";;;;;AAAA;AACA;AACA;AACA;AACA;AACA;AACA;AACA;AAMA,MAAMA,YAAY,GAAI,CAAEC,EAAAA,OAAO,EAAG,CAA+B,8BAAA,CAAA,CAAA;AAE1D,SAASC,iBAAiB,CAACC,IAAY,GAAGH,YAAY,EAAW;EACtE,MAAM;AAAEI,IAAAA,YAAY,EAAEC,WAAAA;GAAa,GAAGC,KAAK,CAACC,YAAY,CAACJ,IAAI,EAAE,OAAO,CAAC,CAEtE,CAAA;EAED,OAAOK,OAAO,CAACC,aAAa,CAC1BC,MAAM,CAACC,IAAI,CAACC,IAAI,CAACN,KAAK,CAACC,YAAY,CAACF,WAAW,EAAE,OAAO,CAAC,CAAC,CAAa,CACxE,CAAA;AACH;;;;"}
+\ No newline at end of file
+diff --git a/dist/types/loadSolanaKeypair.d.ts b/dist/types/loadSolanaKeypair.d.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..4f030fd2f993ba27098e058a0336e6eb3db818d1
+--- /dev/null
++++ b/dist/types/loadSolanaKeypair.d.ts
+@@ -0,0 +1,10 @@
++/**
++ * Copyright (c) 2022 Socean Finance
++ * Based on https://github.com/igneous-labs/solana-cli-config
++ *
++ * This software is released under the MIT License.
++ * https://opensource.org/licenses/MIT
++ *
++ */
++import { Keypair } from '@solana/web3.js';
++export declare function loadSolanaKeypair(path?: string): Keypair;
+diff --git a/package.json b/package.json
+index 3b3cb6ec11f296e3cb24034605a1a4b8d8dd150f..0bd4dd9344259026a415d0b33c946144b91d9787 100644
+--- a/package.json
++++ b/package.json
+@@ -20,20 +20,27 @@
+     "/dist/types",
+     "/src"
+   ],
++  "scripts": {
++    "lint": "eslint --ext js,ts,tsx src",
++    "lint:fix": "eslint --fix --ext js,ts,tsx src",
++    "clean": "rimraf dist",
++    "build": "pnpm clean && tsc && tsc -p test/tsconfig.json && rollup -c",
++    "test": "ava"
++  },
+   "dependencies": {
+-    "@soceanfi/solana-cli-config": "0.2.0",
++    "@metaplex-foundation/umi-web3js-adapters": "workspace:^",
+     "@noble/curves": "^1.0.0",
+-    "@metaplex-foundation/umi-web3js-adapters": "^1.0.0"
++    "yaml": "^2.7.0"
+   },
+   "peerDependencies": {
+-    "@solana/web3.js": "^1.72.0",
+-    "@metaplex-foundation/umi": "^1.0.0"
++    "@metaplex-foundation/umi": "workspace:^",
++    "@solana/web3.js": "^1.72.0"
+   },
+   "devDependencies": {
+     "@ava/typescript": "^3.0.1",
++    "@metaplex-foundation/umi": "workspace:^",
+     "@solana/web3.js": "^1.72.0",
+-    "ava": "^5.1.0",
+-    "@metaplex-foundation/umi": "^1.0.0"
++    "ava": "^5.1.0"
+   },
+   "publishConfig": {
+     "access": "public"
+@@ -56,12 +63,5 @@
+         "test/": "dist/test/test/"
+       }
+     }
+-  },
+-  "scripts": {
+-    "lint": "eslint --ext js,ts,tsx src",
+-    "lint:fix": "eslint --fix --ext js,ts,tsx src",
+-    "clean": "rimraf dist",
+-    "build": "pnpm clean && tsc && tsc -p test/tsconfig.json && rollup -c",
+-    "test": "ava"
+   }
+ }
+\ No newline at end of file
+diff --git a/src/createWeb3JsEddsa.ts b/src/createWeb3JsEddsa.ts
+index 2566dbbb816dc7973801fc652b16da4eb4d6bfed..95b53ee303d4c250c4fd395f597fd21ca817366f 100644
+--- a/src/createWeb3JsEddsa.ts
++++ b/src/createWeb3JsEddsa.ts
+@@ -13,12 +13,12 @@ import {
+   toWeb3JsPublicKey,
+ } from '@metaplex-foundation/umi-web3js-adapters';
+ import { ed25519 } from '@noble/curves/ed25519';
+-import { SolanaCliConfig } from '@soceanfi/solana-cli-config';
+ import {
+   Keypair as Web3JsKeypair,
+   PublicKey as Web3JsPublicKey,
+ } from '@solana/web3.js';
+-import { readFileSync } from 'fs';
++import { readFileSync } from 'node:fs';
++import { loadSolanaKeypair } from './loadSolanaKeypair';
+ 
+ export function createWeb3JsEddsa(): EddsaInterface {
+   const generateKeypair = (): Keypair =>
+@@ -36,7 +36,7 @@ export function createWeb3JsEddsa(): EddsaInterface {
+     );
+ 
+   const createKeypairFromSolanaConfig = (): Keypair =>
+-    fromWeb3JsKeypair(SolanaCliConfig.load().loadKeypair());
++    fromWeb3JsKeypair(loadSolanaKeypair());
+ 
+   const isOnCurve = (input: PublicKeyInput): boolean =>
+     Web3JsPublicKey.isOnCurve(toWeb3JsPublicKey(publicKey(input)));
+diff --git a/src/loadSolanaKeypair.ts b/src/loadSolanaKeypair.ts
+new file mode 100644
+index 0000000000000000000000000000000000000000..10c3d7ea18b9112f575082c705643fcde81e8b38
+--- /dev/null
++++ b/src/loadSolanaKeypair.ts
+@@ -0,0 +1,24 @@
++/**
++ * Copyright (c) 2022 Socean Finance
++ * Based on https://github.com/igneous-labs/solana-cli-config
++ *
++ * This software is released under the MIT License.
++ * https://opensource.org/licenses/MIT
++ *
++ */
++import { Keypair } from '@solana/web3.js';
++import { readFileSync } from 'node:fs';
++import { homedir } from 'node:os';
++import { parse } from 'yaml';
++
++const DEFAULT_PATH = `${homedir()}/.config/solana/cli/config.yml`;
++
++export function loadSolanaKeypair(path: string = DEFAULT_PATH): Keypair {
++  const { keypair_path: keypairPath } = parse(readFileSync(path, 'utf-8')) as {
++    keypair_path: string;
++  };
++
++  return Keypair.fromSecretKey(
++    Buffer.from(JSON.parse(readFileSync(keypairPath, 'utf-8')) as number[])
++  );
++}

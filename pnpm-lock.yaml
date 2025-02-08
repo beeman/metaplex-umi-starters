@@ -4,6 +4,11 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+patchedDependencies:
+  '@metaplex-foundation/umi-eddsa-web3js@1.0.0':
+    hash: 6b515f75ee89290a34089aacddf7e3bdddc86de7efc56b395dcac355cac23338
+    path: patches/@metaplex-foundation__umi-eddsa-web3js@1.0.0.patch
+
 importers:
 
   .:
@@ -2959,7 +2964,7 @@ snapshots:
     dependencies:
       '@metaplex-foundation/umi': 1.0.0
       '@metaplex-foundation/umi-downloader-http': 1.0.0(@metaplex-foundation/umi@1.0.0)
-      '@metaplex-foundation/umi-eddsa-web3js': 1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
+      '@metaplex-foundation/umi-eddsa-web3js': 1.0.0(patch_hash=6b515f75ee89290a34089aacddf7e3bdddc86de7efc56b395dcac355cac23338)(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))
       '@metaplex-foundation/umi-http-fetch': 1.0.0(@metaplex-foundation/umi@1.0.0)
       '@metaplex-foundation/umi-program-repository': 1.0.0(@metaplex-foundation/umi@1.0.0)
       '@metaplex-foundation/umi-rpc-chunk-get-accounts': 1.0.0(@metaplex-foundation/umi@1.0.0)
@@ -2974,7 +2979,7 @@ snapshots:
     dependencies:
       '@metaplex-foundation/umi': 1.0.0
 
-  '@metaplex-foundation/umi-eddsa-web3js@1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
+  '@metaplex-foundation/umi-eddsa-web3js@1.0.0(patch_hash=6b515f75ee89290a34089aacddf7e3bdddc86de7efc56b395dcac355cac23338)(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))':
     dependencies:
       '@metaplex-foundation/umi': 1.0.0
       '@metaplex-foundation/umi-web3js-adapters': 1.0.0(@metaplex-foundation/umi@1.0.0)(@solana/web3.js@1.98.0(bufferutil@4.0.9)(utf-8-validate@5.0.10))

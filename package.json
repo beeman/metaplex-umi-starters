@@ -27,6 +27,9 @@
   "pnpm": {
     "onlyBuiltDependencies": [
       "esbuild"
-    ]
+    ],
+    "patchedDependencies": {
+      "@metaplex-foundation/umi-eddsa-web3js@1.0.0": "patches/@metaplex-foundation__umi-eddsa-web3js@1.0.0.patch"
+    }
   }
 }
