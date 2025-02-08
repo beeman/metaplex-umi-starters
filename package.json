@@ -1,0 +1,17 @@
+{
+  "name": "metaplex-umi-starters",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "vite-react:dev": "pnpm --filter vite-react dev",
+    "vite-react:build": "pnpm --filter vite-react build",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "Bram Borggreve",
+  "license": "MIT",
+  "devDependencies": {
+    "prettier": "^3.4.2"
+  }
+}
