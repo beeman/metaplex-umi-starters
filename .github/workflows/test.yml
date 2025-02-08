@@ -13,7 +13,7 @@ jobs:
       matrix:
         node: [ 18, 20, 22 ]
         pm: [ npm, pnpm, yarn ]
-        template: [ vite-react, vite-svelte, vite-vue ]
+        template: [ vite-react, vite-svelte, vite-svelte-kit, vite-vue ]
 
     steps:
       - name: Checkout repository

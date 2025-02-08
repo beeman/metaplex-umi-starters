@@ -1,4 +1,5 @@
 packages:
   - 'vite-react'
   - 'vite-svelte'
+  - 'vite-svelte-kit'
   - 'vite-vue'

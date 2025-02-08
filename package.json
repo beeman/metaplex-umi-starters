@@ -10,6 +10,9 @@
     "vite-svelte:dev": "pnpm --filter vite-svelte dev",
     "vite-svelte:build": "pnpm --filter vite-svelte build",
     "vite-svelte:preview": "pnpm --filter vite-svelte preview",
+    "vite-svelte-kit:dev": "pnpm --filter vite-svelte-kit dev",
+    "vite-svelte-kit:build": "pnpm --filter vite-svelte-kit build",
+    "vite-svelte-kit:preview": "pnpm --filter vite-svelte-kit preview",
     "vite-vue:dev": "pnpm --filter vite-vue dev",
     "vite-vue:build": "pnpm --filter vite-vue build",
     "vite-vue:preview": "pnpm --filter vite-vue preview",
@@ -20,5 +23,10 @@
   "license": "MIT",
   "devDependencies": {
     "prettier": "^3.4.2"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
   }
 }

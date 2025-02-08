@@ -24,6 +24,16 @@ Use this template as a starter using [create-solana-dapp](https://npm.im/create-
 pnpx create-solana-dapp@latest -t beeman/metaplex-umi-starters/vite-svelte
 ```
 
+### vite-svelte-kit
+
+You can see a live demo at [metaplex-umi-vite-svelte-kit.beeman.dev](https://metaplex-umi-vite-svelte-kit.beeman.dev).
+
+Use this template as a starter using [create-solana-dapp](https://npm.im/create-solana-dapp):
+
+```shell
+pnpx create-solana-dapp@latest -t beeman/metaplex-umi-starters/vite-svelte-kit
+```
+
 ### vite-vue
 
 You can see a live demo at [metaplex-umi-vite-vue.beeman.dev](https://metaplex-umi-vite-vue.beeman.dev).
