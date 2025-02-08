@@ -9,3 +9,9 @@ A bunch of starter projects for <a href="https://github.com/metaplex-foundation/
 ```shell
 pnpx create-solana-dapp@latest -t beeman/metaplex-umi-starters/vite-react
 ```
+
+### vite-svelte
+
+```shell
+pnpx create-solana-dapp@latest -t beeman/metaplex-umi-starters/vite-svelte
+```

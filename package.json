@@ -6,6 +6,10 @@
   "scripts": {
     "vite-react:dev": "pnpm --filter vite-react dev",
     "vite-react:build": "pnpm --filter vite-react build",
+    "vite-react:preview": "pnpm --filter vite-react preview",
+    "vite-svelte:dev": "pnpm --filter vite-svelte dev",
+    "vite-svelte:build": "pnpm --filter vite-svelte build",
+    "vite-svelte:preview": "pnpm --filter vite-svelte preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
