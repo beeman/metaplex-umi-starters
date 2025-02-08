@@ -10,6 +10,9 @@
     "vite-svelte:dev": "pnpm --filter vite-svelte dev",
     "vite-svelte:build": "pnpm --filter vite-svelte build",
     "vite-svelte:preview": "pnpm --filter vite-svelte preview",
+    "vite-vue:dev": "pnpm --filter vite-vue dev",
+    "vite-vue:build": "pnpm --filter vite-vue build",
+    "vite-vue:preview": "pnpm --filter vite-vue preview",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
